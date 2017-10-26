@@ -32,6 +32,17 @@ class Assets {
 	 */
 	public function enqueue_asssets() {
 		$plugin = Plugin::get_instance();
+
+		// API replacement start:
+		/*
+		 * `wp_enqueue_script(
+		 * 	self::HANDLE,
+		 * 	"{$plugin->location->url}assets/js/posts.js",
+		 * 	array( 'jquery' ),
+		 * 	$plugin->version,
+		 * 	true
+		 * );
+		 */
 		$handle = self::HANDLE;
 		$src = "{$plugin->location->url}assets/js/posts.js";
 		$deps = array( 'jquery' );
@@ -42,6 +53,7 @@ class Assets {
 		$wp_scripts->add( $_handle[0], $src, $deps, $ver );
 		$wp_scripts->add_data( $_handle[0], 'group', 1 );
 		$wp_scripts->enqueue( $handle );
+		// API replacement end.
 
 		// Boot JS.
 		wp_add_inline_script(
@@ -60,6 +72,17 @@ class Assets {
 	 */
 	public function enqueue_admin_asssets() {
 		$plugin = Plugin::get_instance();
+
+		// API replacement start:
+		/*
+		 * wp_enqueue_script(
+		 * 	self::HANDLE,
+		 * 	"{$plugin->location->url}assets/js/admin.js",
+		 * 	array( 'jquery' ),
+		 * 	$plugin->version,
+		 * 	true
+		 * );
+		 */
 		$handle = self::HANDLE;
 		$src = "{$plugin->location->url}assets/js/admin.js";
 		$deps = array( 'jquery' );
@@ -70,6 +93,7 @@ class Assets {
 		$wp_scripts->add( $_handle[0], $src, $deps, $ver );
 		$wp_scripts->add_data( $_handle[0], 'group', 1 );
 		$wp_scripts->enqueue( $handle );
+		// API replacement end.
 
 		// Boot JS.
 		wp_add_inline_script(

@@ -76,6 +76,7 @@ class Render {
 			$output = ob_get_clean();
 		}
 
+		// API replacement start: `wp_send_json_success( $output );`.
 		$response = array( 'success' => true );
 
 		if ( isset( $output ) )
@@ -94,6 +95,7 @@ class Render {
 		} else {
 			die;
 		}
+		// API replacement end.
 	}
 
 	/**
@@ -104,9 +106,11 @@ class Render {
 	 */
 	protected function get_remote_posts( $url ) {
 		// Make API call.
+		// API replacement start: `$request = wp_safe_remote_get( untrailingslashit( $url ) . '/wp-json/wp/v2/posts?per_page=4&_embed' );`.
 		$args['reject_unsafe_urls'] = true;
 		$http = _wp_http_get_object();
 		$request = $http->get( untrailingslashit( $url ) . '/wp-json/wp/v2/posts?per_page=4&_embed', $args );
+		// API replacement end.
 		$posts = json_decode( wp_remote_retrieve_body( $request ) );
 
 		if ( ! isset( $posts[0]->id ) ) {
