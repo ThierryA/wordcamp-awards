@@ -37,11 +37,13 @@ class Assets {
 		$deps = array( 'jquery' );
 		$ver = $plugin->version;
 		$in_footer = true;
-		$wp_scripts = wp_scripts();
-		$_handle = explode( '?', $handle );
-		$wp_scripts->add( $_handle[0], $src, $deps, $ver );
-		$wp_scripts->add_data( $_handle[0], 'group', 1 );
-		$wp_scripts->enqueue( $handle );
+//		$wp_scripts = wp_scripts();
+//		$_handle = explode( '?', $handle );
+//		$wp_scripts->add( $_handle[0], $src, $deps, $ver );
+//		$wp_scripts->add_data( $_handle[0], 'group', 1 );
+//		$wp_scripts->enqueue( $handle /);
+		
+		wp_enqueue_script( $handle , $src, $deps, $ver, $in_footer );
 
 		// Boot JS.
 		wp_add_inline_script(
@@ -65,11 +67,13 @@ class Assets {
 		$deps = array( 'jquery' );
 		$ver = $plugin->version;
 		$in_footer = true;
-		$wp_scripts = wp_scripts();
-		$_handle = explode( '?', $handle );
-		$wp_scripts->add( $_handle[0], $src, $deps, $ver );
-		$wp_scripts->add_data( $_handle[0], 'group', 1 );
-		$wp_scripts->enqueue( $handle );
+//		$wp_scripts = wp_scripts();
+//		$_handle = explode( '?', $handle );
+//		$wp_scripts->add( $_handle[0], $src, $deps, $ver );
+//		$wp_scripts->add_data( $_handle[0], 'group', 1 );
+//		$wp_scripts->enqueue( $handle );
+		
+		wp_enqueue_style( $handle, $src, $deps, $ver, $in_footer );
 
 		// Boot JS.
 		wp_add_inline_script(
