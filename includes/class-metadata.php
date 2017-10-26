@@ -162,49 +162,9 @@ class Metadata {
 	 * @return mixed Post meta value if found, false otherwise.
 	 */
 	public function get_post_meta( $post_id, $section_id, $field_id ) {
-		$post = $post_id;
-		$output = OBJECT;
-		$filter = 'raw';
 
-		if ( empty( $post ) && isset( $GLOBALS['post'] ) )
-			$post = $GLOBALS['post'];
+		return get_post_meta($post_id, $field_id );
 
-		if ( $post instanceof WP_Post ) {
-			$_post = $post;
-		} elseif ( is_object( $post ) ) {
-			if ( empty( $post->filter ) ) {
-				$_post = sanitize_post( $post, 'raw' );
-				$_post = new \WP_Post( $_post );
-			} elseif ( 'raw' == $post->filter ) {
-				$_post = new \WP_Post( $post );
-			} else {
-				$_post = \WP_Post::get_instance( $post->ID );
-			}
-		} else {
-			$_post = \WP_Post::get_instance( $post );
-		}
-
-		if ( ! $_post )
-			return null;
-
-		$_post = $_post->filter( $filter );
-
-		if ( $output == ARRAY_A )
-			return $_post->to_array();
-		elseif ( $output == ARRAY_N )
-			return array_values( $_post->to_array() );
-
-		$post = $_post;
-
-		if ( isset( $this->config[ $section_id ]['fields'][ $field_id ] ) ) {
-			$field_id = "{$this->prefix}_{$section_id}_{$field_id}";
-
-			if ( ! empty( $post->$field_id ) ) {
-				return $post->$field_id;
-			}
-		}
-
-		return false;
 	}
 
 	/**
@@ -234,33 +194,7 @@ class Metadata {
 
 				if ( isset( $_POST[ $id ] ) && is_callable( $field['sanitize_callback'] ) ) { // WPCS: input var ok.
 					$value = call_user_func( $field['sanitize_callback'], wp_unslash( $_POST[ $id ] ) ); // WPCS: sanitization ok & input var ok.
-
-					if ( ! empty( $value ) ) {
-						global $wpdb;
-
-						$meta_type = 'post';
-						$object_id = $post_id;
-						$meta_key = $id;
-						$meta_value = $value;
-						$prev_value = '';
-
-						if ( ! $meta_type || ! $meta_key || ! is_numeric( $object_id ) ) {
-							return false;
-						}
-
-						$object_id = absint( $object_id );
-						if ( ! $object_id ) {
-							return false;
-						}
-
-						$table = _get_meta_table( $meta_type );
-						if ( ! $table ) {
-							return false;
-						}
-
-                        update_post_meta( $post_id, $id, $value, '' );
-
-					}
+                    update_post_meta( $post_id, $id, $value, '' );
 				}
 			}
 		}
