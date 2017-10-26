@@ -60,13 +60,6 @@ class Post_Type {
 				'slug' => 'award',
 			),
 		);
-
-		global $wp_post_types;
-
-		if ( ! is_array( $wp_post_types ) ) {
-			$wp_post_types = array();
-		}
-
 		// Sanitize post type name
 		$post_type = sanitize_key( self::NAME );
 
@@ -75,15 +68,7 @@ class Post_Type {
 			return new WP_Error( 'post_type_length_invalid', __( 'Post type names must be between 1 and 20 characters in length.' ) );
 		}
 
-		$post_type_object = new \WP_Post_Type( $post_type, $args );
-		$post_type_object->add_supports();
-		$post_type_object->add_rewrite_rules();
-		$post_type_object->register_meta_boxes();
-
-		$wp_post_types[ $post_type ] = $post_type_object;
-
-		$post_type_object->add_hooks();
-		$post_type_object->register_taxonomies();
+		register_post_type( $post_type, $args );
 	}
 
 	/**
