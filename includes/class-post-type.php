@@ -28,7 +28,7 @@ class Post_Type {
 		add_action( 'init', array( $this, 'register' ) );
 		add_action( 'init', array( $this, 'set_rewrite' ) );
 
-		add_filter( 'post_type_link', array( $this, 'post_type_link' ), 10, 2 );
+		add_filter( 'post_type_link', array( $this, 'set_post_link' ), 10, 2 );
 	}
 
 	/**
