@@ -1,17 +1,13 @@
 <?php
 /**
- * A plugin built for the WCCT API workshop.
+ * Plugin Name: WordCamp Awards
+ * Description: A plugin built for the WCCT API workshop.
+ * Author: Thierry Muller, XWP
+ * Version: 0.0.1
+ * Author URI: https://xwp.co/
  *
  * @package WordCampAwards
  */
-
-/*
-Plugin Name: WordCamp Awards
-Description: A plugin built for the WCCT API workshop.
-Author: Thierry Muller, XWP
-Version: 0.0.1
-Author URI: https://xwp.co/
-*/
 
 namespace WordCampAwards;
 
