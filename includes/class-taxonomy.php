@@ -38,7 +38,7 @@ class Taxonomy {
 			),
 		);
 
-		// API replacement start: `register_taxonomy( self::NAME, Post_Type::NAME, $tax_args );`.
+		// API replacement start:
 		global $wp_taxonomies;
 
 		$taxonomy = self::NAME;

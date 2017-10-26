@@ -34,15 +34,6 @@ class Assets {
 		$plugin = Plugin::get_instance();
 
 		// API replacement start:
-		/*
-		 * `wp_enqueue_script(
-		 * 	self::HANDLE,
-		 * 	"{$plugin->location->url}assets/js/posts.js",
-		 * 	array( 'jquery' ),
-		 * 	$plugin->version,
-		 * 	true
-		 * );
-		 */
 		$handle = self::HANDLE;
 		$src = "{$plugin->location->url}assets/js/posts.js";
 		$deps = array( 'jquery' );
@@ -74,15 +65,6 @@ class Assets {
 		$plugin = Plugin::get_instance();
 
 		// API replacement start:
-		/*
-		 * wp_enqueue_script(
-		 * 	self::HANDLE,
-		 * 	"{$plugin->location->url}assets/js/admin.js",
-		 * 	array( 'jquery' ),
-		 * 	$plugin->version,
-		 * 	true
-		 * );
-		 */
 		$handle = self::HANDLE;
 		$src = "{$plugin->location->url}assets/js/admin.js";
 		$deps = array( 'jquery' );

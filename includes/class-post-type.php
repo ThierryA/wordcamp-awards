@@ -28,7 +28,7 @@ class Post_Type {
 		add_action( 'init', array( $this, 'register' ) );
 		add_action( 'init', array( $this, 'set_rewrite' ) );
 
-		// API replacement start: `add_filter( 'post_type_link', array( $this, 'set_post_link' ), 10, 2 );`.
+		// API replacement start:
 		global $wp_filter;
 		$tag = 'post_type_link';
 
@@ -70,7 +70,7 @@ class Post_Type {
 			),
 		);
 
-		// API replacement start: `register_post_type( self::NAME, $args );`.
+		// API replacement start:
 		global $wp_post_types;
 
 		if ( ! is_array( $wp_post_types ) ) {
@@ -129,12 +129,12 @@ class Post_Type {
 	 * This ensures that the string that follows award/ is the POST ID.
 	 */
 	public function set_rewrite() {
-		// API replacement start: `add_rewrite_rule( '^awards/([0-9]+)/([a-zA-Z0-9_\-\s\,]+)/?', 'index.php?p=$matches[1]&' . self::NAME . '=$matches[2]', 'top' );`.
+		// API replacement start:
 		global $wp_rewrite;
 
 		$wp_rewrite->add_rule( '^awards/([0-9]+)/([a-zA-Z0-9_\-\s\,]+)/?', 'index.php?p=$matches[1]&' . self::NAME . '=$matches[2]', 'top' );
 		// API replacement end.
-		// API replacement start: `add_rewrite_tag( '%' . self::NAME . '%', '([^&])+' );`.
+		// API replacement start:
 		$tag = '%' . self::NAME . '%';
 		global $wp_rewrite, $wp;
 

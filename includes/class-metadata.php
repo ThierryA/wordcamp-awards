@@ -84,19 +84,6 @@ class Metadata {
 			$section = $this->parse_section( $section );
 
 			// API replacement start:
-			/*
-			 * `add_meta_box(
-			 * 	"{$this->prefix}_{$section_id}",
-			 * 	$section['label'],
-			 * 	array( $this, 'render_metabox' ),
-			 * 	Post_Type::NAME,
-			 * 	$section['context'],
-			 * 	$section['priority'],
-			 * 	array(
-			 * 		'section_id' => $section_id,
-			 * 	)
-			 * );`
-			 */
 			global $wp_meta_boxes;
 
 			$id = "{$this->prefix}_{$section_id}";
@@ -229,7 +216,7 @@ class Metadata {
 	 * @return mixed Post meta value if found, false otherwise.
 	 */
 	public function get_post_meta( $post_id, $section_id, $field_id ) {
-		// API replacement start: `$post = get_post( $post_id );`.
+		// API replacement start:
 		$post = $post_id;
 		$output = OBJECT;
 		$filter = 'raw';
@@ -304,7 +291,7 @@ class Metadata {
 					$value = call_user_func( $field['sanitize_callback'], wp_unslash( $_POST[ $id ] ) ); // WPCS: sanitization ok & input var ok.
 
 					if ( ! empty( $value ) ) {
-						// API replacement start: `update_post_meta( $post_id, $id, $value );`.
+						// API replacement start:
 						global $wpdb;
 
 						$meta_type = 'post';
@@ -369,7 +356,7 @@ class Metadata {
 						wp_cache_delete($object_id, $meta_type . '_meta');
 						// API replacement end.
 					} else {
-						// API replacement start: delete_post_meta( $post_id, $id );
+						// API replacement start:
 						global $wpdb;
 
 						$meta_type = 'post';
