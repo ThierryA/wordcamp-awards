@@ -28,14 +28,7 @@ class Post_Type {
 		add_action( 'init', array( $this, 'register' ) );
 		add_action( 'init', array( $this, 'set_rewrite' ) );
 
-		global $wp_filter;
-		$tag = 'post_type_link';
-
-		if ( ! isset( $wp_filter[ $tag ] ) ) {
-			$wp_filter[ $tag ] = new \WP_Hook();
-		}
-
-		$wp_filter[ $tag ]->add_filter( $tag, array( $this, 'set_post_link' ), 10, 2 );
+		add_filter( 'post_type_link', array( $this, 'post_type_link' ), 10, 2 );
 	}
 
 	/**
