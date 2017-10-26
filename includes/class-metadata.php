@@ -163,7 +163,7 @@ class Metadata {
 	 */
 	public function get_post_meta( $post_id, $section_id, $field_id ) {
         $id = "{$this->prefix}_{$section_id}_{$field_id}";
-		return get_post_meta($post_id, $id );
+		return get_post_meta($post_id, $id, true );
 
 	}
 
