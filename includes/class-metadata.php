@@ -218,42 +218,11 @@ class Metadata {
 		$output = OBJECT;
 		$filter = 'raw';
 
-		if ( empty( $post ) && isset( $GLOBALS['post'] ) )
-			$post = $GLOBALS['post'];
-
-		if ( $post instanceof WP_Post ) {
-			$_post = $post;
-		} elseif ( is_object( $post ) ) {
-			if ( empty( $post->filter ) ) {
-				$_post = sanitize_post( $post, 'raw' );
-				$_post = new \WP_Post( $_post );
-			} elseif ( 'raw' == $post->filter ) {
-				$_post = new \WP_Post( $post );
-			} else {
-				$_post = \WP_Post::get_instance( $post->ID );
-			}
-		} else {
-			$_post = \WP_Post::get_instance( $post );
-		}
-
-		if ( ! $_post )
-			return null;
-
-		$_post = $_post->filter( $filter );
-
-		if ( $output == ARRAY_A )
-			return $_post->to_array();
-		elseif ( $output == ARRAY_N )
-			return array_values( $_post->to_array() );
-
-		$post = $_post;
 
 		if ( isset( $this->config[ $section_id ]['fields'][ $field_id ] ) ) {
 			$field_id = "{$this->prefix}_{$section_id}_{$field_id}";
 
-			if ( ! empty( $post->$field_id ) ) {
-				return $post->$field_id;
-			}
+			return get_post_meta( $post_id, $field_id, true );
 		}
 
 		return false;
@@ -288,134 +257,12 @@ class Metadata {
 					$value = call_user_func( $field['sanitize_callback'], wp_unslash( $_POST[ $id ] ) ); // WPCS: sanitization ok & input var ok.
 
 					if ( ! empty( $value ) ) {
-						global $wpdb;
-
-						$meta_type = 'post';
+						// $meta_type = 'post';
 						$object_id = $post_id;
 						$meta_key = $id;
 						$meta_value = $value;
 						$prev_value = '';
-
-						if ( ! $meta_type || ! $meta_key || ! is_numeric( $object_id ) ) {
-							return false;
-						}
-
-						$object_id = absint( $object_id );
-						if ( ! $object_id ) {
-							return false;
-						}
-
-						$table = _get_meta_table( $meta_type );
-						if ( ! $table ) {
-							return false;
-						}
-
-						$column = sanitize_key($meta_type . '_id');
-						$id_column = 'user' == $meta_type ? 'umeta_id' : 'meta_id';
-
-						// expected_slashed ($meta_key)
-						$raw_meta_key = $meta_key;
-						$meta_key = wp_unslash($meta_key);
-						$passed_value = $meta_value;
-						$meta_value = wp_unslash($meta_value);
-						$meta_value = sanitize_meta( $meta_key, $meta_value, $meta_type );
-
-						// Compare existing value to new value if no prev value given and the key exists only once.
-						if ( empty($prev_value) ) {
-							$old_value = get_metadata($meta_type, $object_id, $meta_key);
-							if ( count($old_value) == 1 ) {
-								if ( $old_value[0] === $meta_value )
-									return false;
-							}
-						}
-
-						$meta_ids = $wpdb->get_col( $wpdb->prepare( "SELECT $id_column FROM $table WHERE meta_key = %s AND $column = %d", $meta_key, $object_id ) );
-						if ( empty( $meta_ids ) ) {
-							return add_metadata( $meta_type, $object_id, $raw_meta_key, $passed_value );
-						}
-
-						$_meta_value = $meta_value;
-						$meta_value = maybe_serialize( $meta_value );
-
-						$data  = compact( 'meta_value' );
-						$where = array( $column => $object_id, 'meta_key' => $meta_key );
-
-						if ( !empty( $prev_value ) ) {
-							$prev_value = maybe_serialize($prev_value);
-							$where['meta_value'] = $prev_value;
-						}
-
-						$result = $wpdb->update( $table, $data, $where );
-						if ( ! $result )
-							return false;
-
-						wp_cache_delete($object_id, $meta_type . '_meta');
-					} else {
-						global $wpdb;
-
-						$meta_type = 'post';
-						$object_id = $post_id;
-						$meta_key = $id;
-						$meta_value = $value;
-						$delete_all = false;
-
-						if ( ! $meta_type || ! $meta_key || ! is_numeric( $object_id ) && ! $delete_all ) {
-							return false;
-						}
-
-						$object_id = absint( $object_id );
-						if ( ! $object_id && ! $delete_all ) {
-							return false;
-						}
-
-						$table = _get_meta_table( $meta_type );
-						if ( ! $table ) {
-							return false;
-						}
-
-						$type_column = sanitize_key($meta_type . '_id');
-						$id_column = 'user' == $meta_type ? 'umeta_id' : 'meta_id';
-						// expected_slashed ($meta_key)
-						$meta_key = wp_unslash($meta_key);
-						$meta_value = wp_unslash($meta_value);
-
-						$_meta_value = $meta_value;
-						$meta_value = maybe_serialize( $meta_value );
-
-						$query = $wpdb->prepare( "SELECT $id_column FROM $table WHERE meta_key = %s", $meta_key );
-
-						if ( !$delete_all )
-							$query .= $wpdb->prepare(" AND $type_column = %d", $object_id );
-
-						if ( '' !== $meta_value && null !== $meta_value && false !== $meta_value )
-							$query .= $wpdb->prepare(" AND meta_value = %s", $meta_value );
-
-						$meta_ids = $wpdb->get_col( $query );
-						if ( !count( $meta_ids ) )
-							return false;
-
-						if ( $delete_all ) {
-							$value_clause = '';
-							if ( '' !== $meta_value && null !== $meta_value && false !== $meta_value ) {
-								$value_clause = $wpdb->prepare( " AND meta_value = %s", $meta_value );
-							}
-
-							$object_ids = $wpdb->get_col( $wpdb->prepare( "SELECT $type_column FROM $table WHERE meta_key = %s $value_clause", $meta_key ) );
-						}
-
-						$query = "DELETE FROM $table WHERE $id_column IN( " . implode( ',', $meta_ids ) . " )";
-						$count = $wpdb->query($query);
-
-						if ( !$count )
-							return false;
-
-						if ( $delete_all ) {
-							foreach ( (array) $object_ids as $o_id ) {
-								wp_cache_delete($o_id, $meta_type . '_meta');
-							}
-						} else {
-							wp_cache_delete($object_id, $meta_type . '_meta');
-						}
+						update_post_meta( $post_id, $meta_key, $meta_value, $prev_value );
 					}
 				}
 			}
