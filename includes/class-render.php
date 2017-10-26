@@ -105,15 +105,7 @@ class Render {
 	protected function get_remote_posts( $url ) {
 		// Make API call.
 		$args['reject_unsafe_urls'] = true;
-		$http = _wp_http_get_object();
-		$request = $http->get( untrailingslashit( $url ) . '/wp-json/wp/v2/posts?per_page=4&_embed', $args );
-		$posts = json_decode( wp_remote_retrieve_body( $request ) );
-
-		if ( ! isset( $posts[0]->id ) ) {
-			return array();
-		}
-
-		return $posts;
+        return wp_remote_post($url, $args);
 	}
 
 }
