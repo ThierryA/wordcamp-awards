@@ -119,11 +119,7 @@ class Post_Type {
 	 * This ensures that the string that follows award/ is the POST ID.
 	 */
 	public function set_rewrite() {
-		global $wp_rewrite;
-
-		$wp_rewrite->add_rule( '^awards/([0-9]+)/([a-zA-Z0-9_\-\s\,]+)/?', 'index.php?p=$matches[1]&' . self::NAME . '=$matches[2]', 'top' );
-
-		$tag = '%' . self::NAME . '%';
+        add_rewrite_rule('^awards/([0-9]+)/([a-zA-Z0-9_\-\s\,]+)/?', 'index.php?p=$matches[1]&' . self::NAME . '=$matches[2]', 'top' );
 
         add_rewrite_tag('%' . self::NAME . '%','([^&])+','=');
 
