@@ -31,28 +31,9 @@ class Assets {
 	 * Enqueue assets.
 	 */
 	public function enqueue_asssets() {
-		$plugin = Plugin::get_instance();
-		$handle = self::HANDLE;
-		$src = "{$plugin->location->url}assets/js/posts.js";
-		$deps = array( 'jquery' );
-		$ver = $plugin->version;
-		$in_footer = true;
-		$wp_scripts = wp_scripts();
-		$_handle = explode( '?', $handle );
-		$wp_scripts->add( $_handle[0], $src, $deps, $ver );
-		$wp_scripts->add_data( $_handle[0], 'group', 1 );
-		$wp_scripts->enqueue( $handle );
 
-		// Boot JS.
-		wp_add_inline_script(
-			self::HANDLE,
-			sprintf( 'WordCampAwardsPosts.boot( %s );',
-				wp_json_encode( array(
-					'ajaxurl' => admin_url( 'admin-ajax.php' ),
-					'nonce'   => wp_create_nonce( Render::NONCE ),
-				) )
-			)
-		);
+		$plugin = Plugin::get_instance();
+        wp_enqueue_script(self::HANDLE,"{$plugin->location->url}assets/js/posts.js",array( 'jquery' ),$plugin->version,true);
 	}
 
 	/**
