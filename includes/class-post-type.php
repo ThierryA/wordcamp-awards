@@ -124,15 +124,9 @@ class Post_Type {
 		$wp_rewrite->add_rule( '^awards/([0-9]+)/([a-zA-Z0-9_\-\s\,]+)/?', 'index.php?p=$matches[1]&' . self::NAME . '=$matches[2]', 'top' );
 
 		$tag = '%' . self::NAME . '%';
-		global $wp_rewrite, $wp;
 
-		if ( empty( $query ) ) {
-			$qv = trim( $tag, '%' );
-			$wp->add_query_var( $qv );
-			$query = $qv . '=';
-		}
+        add_rewrite_tag('%' . self::NAME . '%','([^&])+','=');
 
-		$wp_rewrite->add_rewrite_tag( $tag, '([^&])+', $query );
 	}
 
 }
