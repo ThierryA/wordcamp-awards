@@ -31,17 +31,19 @@ class Assets {
 	 * Enqueue assets.
 	 */
 	public function enqueue_asssets() {
+		if ( Post_Type::NAME !== get_post_type() || false === is_single() ) {
+			return;
+		}
+
 		$plugin = Plugin::get_instance();
-		$handle = self::HANDLE;
-		$src = "{$plugin->location->url}assets/js/posts.js";
-		$deps = array( 'jquery' );
-		$ver = $plugin->version;
-		$in_footer = true;
-		$wp_scripts = wp_scripts();
-		$_handle = explode( '?', $handle );
-		$wp_scripts->add( $_handle[0], $src, $deps, $ver );
-		$wp_scripts->add_data( $_handle[0], 'group', 1 );
-		$wp_scripts->enqueue( $handle );
+
+		wp_enqueue_script(
+			self::HANDLE,
+			"{$plugin->location->url}assets/js/posts.js",
+			array( 'jquery' ),
+			$plugin->version,
+			true
+		);
 
 		// Boot JS.
 		wp_add_inline_script(
@@ -59,17 +61,21 @@ class Assets {
 	 * Enqueue admin assets.
 	 */
 	public function enqueue_admin_asssets() {
+		global $pagenow;
+
+		if ( Post_Type::NAME !== get_post_type() || false === stripos( $pagenow, 'post' ) ) {
+			return;
+		}
+
 		$plugin = Plugin::get_instance();
-		$handle = self::HANDLE;
-		$src = "{$plugin->location->url}assets/js/admin.js";
-		$deps = array( 'jquery' );
-		$ver = $plugin->version;
-		$in_footer = true;
-		$wp_scripts = wp_scripts();
-		$_handle = explode( '?', $handle );
-		$wp_scripts->add( $_handle[0], $src, $deps, $ver );
-		$wp_scripts->add_data( $_handle[0], 'group', 1 );
-		$wp_scripts->enqueue( $handle );
+
+		wp_enqueue_script(
+			self::HANDLE,
+			"{$plugin->location->url}assets/js/admin.js",
+			array( 'jquery' ),
+			$plugin->version,
+			true
+		);
 
 		// Boot JS.
 		wp_add_inline_script(
