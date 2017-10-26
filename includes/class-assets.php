@@ -36,23 +36,13 @@ class Assets {
 		$src = "{$plugin->location->url}assets/js/posts.js";
 		$deps = array( 'jquery' );
 		$ver = $plugin->version;
-		$in_footer = true;
-		$wp_scripts = wp_scripts();
-		$_handle = explode( '?', $handle );
-		$wp_scripts->add( $_handle[0], $src, $deps, $ver );
-		$wp_scripts->add_data( $_handle[0], 'group', 1 );
-		$wp_scripts->enqueue( $handle );
 
-		// Boot JS.
-		wp_add_inline_script(
-			self::HANDLE,
-			sprintf( 'WordCampAwardsPosts.boot( %s );',
-				wp_json_encode( array(
-					'ajaxurl' => admin_url( 'admin-ajax.php' ),
-					'nonce'   => wp_create_nonce( Render::NONCE ),
-				) )
-			)
-		);
+		wp_enqueue_script( $handle, $src, array( 'jquery' ), $ver, true );
+
+		wp_localize_script( $handle, 'WordCampAwardsPosts.boot', array(
+			'ajaxurl' => admin_url( 'admin-ajax.php' ),
+			'nonce'   => wp_create_nonce( Render::NONCE ),
+		 ) );
 	}
 
 	/**
@@ -64,24 +54,26 @@ class Assets {
 		$src = "{$plugin->location->url}assets/js/admin.js";
 		$deps = array( 'jquery' );
 		$ver = $plugin->version;
-		$in_footer = true;
-		$wp_scripts = wp_scripts();
-		$_handle = explode( '?', $handle );
-		$wp_scripts->add( $_handle[0], $src, $deps, $ver );
-		$wp_scripts->add_data( $_handle[0], 'group', 1 );
-		$wp_scripts->enqueue( $handle );
+		
+		wp_enqueue_script( $handle, $src, array( 'jquery' ), $ver, true );
+
+		wp_localize_script( $handle, 'WordCampAwardsPosts.boot', array(
+			'spinnerText' => __( 'Validating API accessible', 'wordcamp-awards' ),
+			'successText' => __( 'REST API accessible', 'wordcamp-awards' ),
+			'failText'    => __( 'REST API not accessible', 'wordcamp-awards' ),
+		) );
 
 		// Boot JS.
-		wp_add_inline_script(
-			self::HANDLE,
-			sprintf( 'WordCampAwardsAdmin.boot( %s );',
-				wp_json_encode( array(
-					'spinnerText' => __( 'Validating API accessible', 'wordcamp-awards' ),
-					'successText' => __( 'REST API accessible', 'wordcamp-awards' ),
-					'failText'    => __( 'REST API not accessible', 'wordcamp-awards' ),
-				) )
-			)
-		);
+		// wp_add_inline_script(
+		// 	self::HANDLE,
+		// 	sprintf( 'WordCampAwardsAdmin.boot( %s );',
+		// 		wp_json_encode( array(
+		// 			'spinnerText' => __( 'Validating API accessible', 'wordcamp-awards' ),
+		// 			'successText' => __( 'REST API accessible', 'wordcamp-awards' ),
+		// 			'failText'    => __( 'REST API not accessible', 'wordcamp-awards' ),
+		// 		) )
+		// 	)
+		// );
 	}
 
 }
