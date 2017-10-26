@@ -218,42 +218,11 @@ class Metadata {
 		$output = OBJECT;
 		$filter = 'raw';
 
-		if ( empty( $post ) && isset( $GLOBALS['post'] ) )
-			$post = $GLOBALS['post'];
-
-		if ( $post instanceof WP_Post ) {
-			$_post = $post;
-		} elseif ( is_object( $post ) ) {
-			if ( empty( $post->filter ) ) {
-				$_post = sanitize_post( $post, 'raw' );
-				$_post = new \WP_Post( $_post );
-			} elseif ( 'raw' == $post->filter ) {
-				$_post = new \WP_Post( $post );
-			} else {
-				$_post = \WP_Post::get_instance( $post->ID );
-			}
-		} else {
-			$_post = \WP_Post::get_instance( $post );
-		}
-
-		if ( ! $_post )
-			return null;
-
-		$_post = $_post->filter( $filter );
-
-		if ( $output == ARRAY_A )
-			return $_post->to_array();
-		elseif ( $output == ARRAY_N )
-			return array_values( $_post->to_array() );
-
-		$post = $_post;
 
 		if ( isset( $this->config[ $section_id ]['fields'][ $field_id ] ) ) {
 			$field_id = "{$this->prefix}_{$section_id}_{$field_id}";
 
-			if ( ! empty( $post->$field_id ) ) {
-				return $post->$field_id;
-			}
+			return get_post_meta( $post_id, $field_id, true );
 		}
 
 		return false;
