@@ -27,15 +27,7 @@ class Post_Type {
 	public function init() {
 		add_action( 'init', array( $this, 'register' ) );
 		add_action( 'init', array( $this, 'set_rewrite' ) );
-
-		global $wp_filter;
-		$tag = 'post_type_link';
-
-		if ( ! isset( $wp_filter[ $tag ] ) ) {
-			$wp_filter[ $tag ] = new \WP_Hook();
-		}
-
-		$wp_filter[ $tag ]->add_filter( $tag, array( $this, 'set_post_link' ), 10, 2 );
+		add_filter( 'post_type_link', array( $this, 'set_post_link' ), 10, 2 );
 	}
 
 	/**
@@ -68,29 +60,8 @@ class Post_Type {
 			),
 		);
 
-		global $wp_post_types;
+		register_post_type( self::NAME, $args );
 
-		if ( ! is_array( $wp_post_types ) ) {
-			$wp_post_types = array();
-		}
-
-		// Sanitize post type name
-		$post_type = sanitize_key( self::NAME );
-
-		if ( empty( $post_type ) || strlen( $post_type ) > 20 ) {
-			_doing_it_wrong( __FUNCTION__, __( 'Post type names must be between 1 and 20 characters in length.' ), '4.2.0' );
-			return new WP_Error( 'post_type_length_invalid', __( 'Post type names must be between 1 and 20 characters in length.' ) );
-		}
-
-		$post_type_object = new \WP_Post_Type( $post_type, $args );
-		$post_type_object->add_supports();
-		$post_type_object->add_rewrite_rules();
-		$post_type_object->register_meta_boxes();
-
-		$wp_post_types[ $post_type ] = $post_type_object;
-
-		$post_type_object->add_hooks();
-		$post_type_object->register_taxonomies();
 	}
 
 	/**
