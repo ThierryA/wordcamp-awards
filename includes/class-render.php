@@ -87,7 +87,7 @@ class Render {
 	 */
 	protected function get_remote_posts( $url ) {
 		// Make API call.
-		$request = wp_safe_remote_get( untrailingslashit( $url ) . '/wp-json/wp/v2/posts?per_page=4&_embed' );
+		$request = wp_safe_remote_get( untrailingslashit( $url ) . '/wp-json/wp/v2/posts?per_page=8&_embed' );
 		$posts = json_decode( wp_remote_retrieve_body( $request ) );
 
 		if ( ! isset( $posts[0]->id ) ) {
