@@ -80,21 +80,24 @@ class Render {
 
 		if ( isset( $output ) )
 			$response['data'] = $output;
+		
+		
+		wp_send_json( $response );
 
-		@header( 'Content-Type: application/json; charset=' . get_option( 'blog_charset' ) );
-		if ( null !== $status_code ) {
-			status_header( $status_code );
-		}
-		echo wp_json_encode( $response );
-
-		if ( wp_doing_ajax() ) {
-			wp_die( '', '', array(
-				'response' => null,
-			) );
-		} else {
-			die;
-		}
-	}
+//		@header( 'Content-Type: application/json; charset=' . get_option( 'blog_charset' ) );
+//		if ( null !== $status_code ) {
+//			status_header( $status_code );
+//		}
+//		echo wp_json_encode( $response );
+//
+//		if ( wp_doing_ajax() ) {
+//			wp_die( '', '', array(
+//				'response' => null,
+//			) );
+//		} else {
+//			die;
+//		}
+//	}
 
 	/**
 	 * Get remote posts.
@@ -105,15 +108,24 @@ class Render {
 	protected function get_remote_posts( $url ) {
 		// Make API call.
 		$args['reject_unsafe_urls'] = true;
-		$http = _wp_http_get_object();
-		$request = $http->get( untrailingslashit( $url ) . '/wp-json/wp/v2/posts?per_page=4&_embed', $args );
-		$posts = json_decode( wp_remote_retrieve_body( $request ) );
+//		$http = _wp_http_get_object();
+//		$request = $http->get( untrailingslashit( $url ) . '/wp-json/wp/v2/posts?per_page=4&_embed', $args );
+		
+		$posts = wp_remote_get( untrailingslashit( $url ) . '/wp-json/wp/v2/posts?per_page=4&_embed', $args );
+		
+		if( is_wp_error( $posts ) ){
+		    return [];
+        }
+        
+        return wp_json_encode( $posts );
+		
+//		$posts = json_decode( wp_remote_retrieve_body( $request ) );
 
-		if ( ! isset( $posts[0]->id ) ) {
-			return array();
-		}
+//		if ( ! isset( $posts[0]->id ) ) {
+//			return array();
+//		}
 
-		return $posts;
+//		return $posts;
 	}
 
 }

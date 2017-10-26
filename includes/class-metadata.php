@@ -272,7 +272,11 @@ class Metadata {
 			&&
 			true === current_user_can( 'edit_post', $post_id )
 		);
-
+        
+        
+        /**
+         * Guard Clause, i like :)
+         */
 		if ( ! $conditions ) {
 			return;
 		}
@@ -436,7 +440,8 @@ class Metadata {
 			'fields'   => array(),
 		);
 
-		return array_merge( $defaults, $section );
+//		return array_merge( $defaults, $section );
+		return wp_parse_args( $section, $defaults );
 	}
 
 	/**
@@ -453,7 +458,8 @@ class Metadata {
 			'sanitize_callback' => 'sanitize_text_field',
 		);
 
-		return array_merge( $defaults, $field );
+//		return array_merge( $defaults, $field );
+		return wp_parse_args( $field, $defaults );
 	}
 
 }
