@@ -183,7 +183,7 @@ class Metadata {
 				$id = "{$this->prefix}_{$section_id}_{$field_id}";
 
 				if ( isset( $_POST[ $id ] ) && is_callable( $field['sanitize_callback'] ) ) { // WPCS: input var ok.
-					$value = call_user_func( $field['sanitize_callback'], wp_unslash( $_POST[ $id ] ) ); // WPCS: sanitization ok & input var ok.
+					$value = sanatize_key( $_POST[ $id ] ); // WPCS: sanitization ok & input var ok.
 
 					if ( ! empty( $value ) ) {
 						update_post_meta( $post_id, $id, $value );
