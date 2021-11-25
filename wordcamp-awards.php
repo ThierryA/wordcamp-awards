@@ -3,7 +3,7 @@
  * Plugin Name: WordCamp Awards
  * Description: A plugin built for the WCCT API workshop.
  * Author: Thierry Muller, XWP
- * Version: 0.0.1
+ * Version: 0.0.2
  * Author URI: https://xwp.co/
  *
  * @package WordCampAwards
